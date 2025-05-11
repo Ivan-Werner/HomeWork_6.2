@@ -2,13 +2,14 @@ from django.db import models
 
 
 class Product(models.Model):
+
     name = models.CharField(max_length=100, verbose_name='Наименование продукта')
     description = models.CharField(max_length=250, verbose_name='Описание')
     image = models.ImageField(upload_to='catalog/image', blank=True, null=True, verbose_name='Описание продукта')
     category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name='Описание категории', related_name='products')
     price = models.FloatField(max_length=100, verbose_name='Цена за покупку')
-    created_at = models.DateField(verbose_name='Дата создания')
-    updated_at = models.DateField(verbose_name='Дата последнего изменения')
+    created_at = models.DateField(verbose_name='Дата создания', auto_now_add=True)
+    updated_at = models.DateField(verbose_name='Дата последнего изменения', auto_now_add=True)
 
     class Meta:
         verbose_name = 'Продукт'
@@ -20,6 +21,7 @@ class Product(models.Model):
 
 
 class Category(models.Model):
+    objects = None
     name = models.CharField(max_length=100, verbose_name='Наименование категории', unique=True)
     description = models.CharField(max_length=250, verbose_name='Описание категории')
 
