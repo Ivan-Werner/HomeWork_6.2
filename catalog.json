@@ -1,0 +1,57 @@
+[
+{
+  "model": "catalog.product",
+  "pk": 14,
+  "fields": {
+    "name": "Dell",
+    "description": "Мощный и компактный laptop",
+    "image": "",
+    "category": 6,
+    "price": 55000.0,
+    "created_at": "2025-05-05",
+    "updated_at": "2025-05-05"
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 15,
+  "fields": {
+    "name": "Asus",
+    "description": "Ноутбук для работы и развлечений",
+    "image": "",
+    "category": 6,
+    "price": 50000.0,
+    "created_at": "2025-05-05",
+    "updated_at": "2025-05-05"
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 16,
+  "fields": {
+    "name": "DNS PC",
+    "description": "ПК для дома и офиса",
+    "image": "",
+    "category": 7,
+    "price": 40000.0,
+    "created_at": "2025-05-05",
+    "updated_at": "2025-05-05"
+  }
+},
+{
+  "model": "catalog.category",
+  "pk": 6,
+  "fields": {
+    "name": "Ноутбуки",
+    "description": "Мощный и компактный laptop"
+  }
+},
+{
+  "model": "catalog.category",
+  "pk": 7,
+  "fields": {
+    "name": "ПК",
+    "description": "ПК для дома и офиса"
+  }
+}
+]
