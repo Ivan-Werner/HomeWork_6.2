@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'catalog/base.html' %}
 {% block content%}
 {% load my_tags %}
 
@@ -9,10 +9,10 @@
 							<div class="card shadow-sm">
 								<img src="{{ product.image | media_filter }}">
 								<div class="card-body">
-									<p class="card-text">Название: {{ product.name }}</p>
-									<p class="card-text">Категория: {{ product.category }}</p>
-									<p class="card-text">Описание: {{ product.description | truncatechars:100 }}</p>
-									<p class="card-text">Цена: {{ product.price }}</p>
+									<p class="card-text">Название: {{ object.name }}</p>
+									<p class="card-text">Категория: {{ object.category }}</p>
+									<p class="card-text">Описание: {{ object.description | truncatechars:100 }}</p>
+									<p class="card-text">Цена: {{ object.price }}</p>
 									<div class="d-flex justify-content-between align-items-center">
 										<div class="btn-group">
 											<a class="btn btn-primary" href="{% url 'catalog:products_list' %}" role="button">Назад</a>
