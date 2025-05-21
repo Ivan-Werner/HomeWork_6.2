@@ -2,15 +2,15 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 
 from catalog.models import Product
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 
 
-def home(request):
-    return render(request, 'home.html')
+class HomeView(TemplateView):
+    template_name = 'catalog/home.html'
 
 
-def contacts(request):
-    return render(request, 'contacts.html')
+class ContactsView(TemplateView):
+    template_name = 'catalog/contacts.html'
 
 
 class ProductListView(ListView):
@@ -33,6 +33,6 @@ class ProductUpdateView(UpdateView):
     success_url = reverse_lazy("catalog:products_list")
 
 
-class ProductDeleteView(DetailView):
+class ProductDeleteView(DeleteView):
     model = Product
     success_url = reverse_lazy("catalog:products_list")
