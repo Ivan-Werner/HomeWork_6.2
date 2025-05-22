@@ -5,9 +5,9 @@ class Product(models.Model):
 
     name = models.CharField(max_length=100, verbose_name='Наименование продукта')
     description = models.CharField(max_length=250, verbose_name='Описание')
-    image = models.ImageField(upload_to='catalog/image', blank=True, null=True, verbose_name='Описание продукта')
+    image = models.ImageField(upload_to='catalog/image', blank=True, null=True, verbose_name='Изображение')
     category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name='Описание категории', related_name='products')
-    price = models.FloatField(max_length=100, verbose_name='Цена за покупку')
+    price = models.FloatField(max_length=100, verbose_name='Цена товара')
     created_at = models.DateField(verbose_name='Дата создания', auto_now_add=True)
     updated_at = models.DateField(verbose_name='Дата последнего изменения', auto_now_add=True)
 
@@ -31,3 +31,4 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
