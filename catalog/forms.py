@@ -1,21 +1,33 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, BooleanField
 from catalog.models import Product, Category
 from django.core.exceptions import ValidationError
 
 banned_words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
 
 
-class ProductForm(ModelForm):
+class StyleMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if isinstance(field, BooleanField):
+                field.widget.attrs['class'] = 'form-check-input'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
+
+
+class ProductForm(StyleMixin, ModelForm):
     class Meta:
         model = Product
         fields = "__all__"
+
+
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
         self.fields['name'].widget.attrs.update({
             'class': 'form-control',
             'placeholder': 'Введите название'
-
         })
         self.fields['description'].widget.attrs.update({
             'class': 'form-control',
@@ -30,6 +42,9 @@ class ProductForm(ModelForm):
         self.fields['price'].widget.attrs.update({
             'class': 'form-control',
             'placeholder': 'Введите цену'
+        })
+        self.fields['in_active'].widget.attrs.update({
+            'class': 'custom-checkbox'
         })
 
     def clean_name(self):
@@ -60,7 +75,7 @@ class ProductForm(ModelForm):
             return image
 
 
-class CategoryForm(ModelForm):
+class CategoryForm(StyleMixin, ModelForm):
     class Meta:
         model = Category
         fields = "__all__"

@@ -3,10 +3,12 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-6">
-            <form class="row" method="post" enctype="multipart/form-data">
+        <h1 class="mb-4">Редактирование</h1>
+        <form method="post">
                 <div class="card">
                     <div class="card-body">
                         {% csrf_token %}
+                        {{ form.non_field_errors }}
                         {{ form.as_p }}
                     </div>
                     <button type="submit" class="btn btn-primary">
@@ -16,6 +18,7 @@
                         Создать
                         {% endif %}
                     </button>
+                     <a class="btn btn-primary" href="{% url 'catalog:products_list' %}">Назад</a>
                 </div>
             </form>
         </div>

@@ -42,6 +42,8 @@ class BlogUpdateView(UpdateView):
         return reverse("blog:blog_detail", args=[self.kwargs.get("pk")])
 
 
+
+
 class BlogDeleteView(DeleteView):
     model = Blog
     success_url = reverse_lazy("blog:blog_list")

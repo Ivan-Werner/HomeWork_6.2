@@ -10,6 +10,7 @@ class Product(models.Model):
     price = models.FloatField(max_length=100, verbose_name='Цена товара')
     created_at = models.DateField(verbose_name='Дата создания', auto_now_add=True)
     updated_at = models.DateField(verbose_name='Дата последнего изменения', auto_now_add=True)
+    in_active = models.BooleanField(default=True, verbose_name="В наличии")
 
     class Meta:
         verbose_name = 'Продукт'
