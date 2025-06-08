@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseForbidden
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 
 from catalog.forms import ProductForm, ProductModeratorForm
@@ -28,7 +28,6 @@ class ProductListView(ListView):
             # Иначе, если пользователь аутентифицирован, показываем только его продукты
             return Product.objects.filter(owner=self.request.user)
         return Product.objects.none()
-
 
 
 
@@ -60,17 +59,16 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
             return ProductModeratorForm
         return ProductForm
 
-    def test_func(self):
-        product = self.get_object()
-        return self.request.user == product.owner or self.request.user.has_perm(
-            "catalog.can_unpublish_product"
-        )
-
-    def handle_no_permission(self):
-        raise PermissionDenied
-
 
 class ProductDeleteView(DeleteView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products_list")
+
+    def delete_product(request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+        if request.user == product.owner:
+            product.delete()
+            return redirect('product_list')
+        else:
+            return HttpResponseForbidden("У вас нет прав для удаления этого продукта.")
