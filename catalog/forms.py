@@ -15,12 +15,16 @@ class StyleMixin:
                 field.widget.attrs['class'] = 'form-control'
 
 
-
 class ProductForm(StyleMixin, ModelForm):
     class Meta:
         model = Product
         fields = "__all__"
 
+
+class ProductModeratorForm(StyleMixin, ModelForm):
+    class Meta:
+        model = Product
+        fields = ['is_published']
 
 
     def __init__(self, *args, **kwargs):
