@@ -1,5 +1,7 @@
 from django.db import models
 
+from config import settings
+
 
 class Product(models.Model):
 
@@ -11,11 +13,17 @@ class Product(models.Model):
     created_at = models.DateField(verbose_name='Дата создания', auto_now_add=True)
     updated_at = models.DateField(verbose_name='Дата последнего изменения', auto_now_add=True)
     in_active = models.BooleanField(default=True, verbose_name="В наличии")
+    is_published = models.BooleanField(default=False, verbose_name="Статус публикации")
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец', related_name='products', null=True)
 
     class Meta:
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
         ordering = ['name', 'category']
+        permissions = [
+            ('can_unpublish_product', 'Can unpublish product'),
+            ('can_delete_product', 'Can delete product')
+        ]
 
     def __str__(self):
         return f'{self.name} {self.price}'

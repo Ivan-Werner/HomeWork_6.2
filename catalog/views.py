@@ -1,8 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, get_object_or_404
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 
-from catalog.forms import ProductForm
+from catalog.forms import ProductForm, ProductModeratorForm
 from catalog.models import Product
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 
@@ -18,8 +20,18 @@ class ContactsView(TemplateView):
 class ProductListView(ListView):
     model = Product
 
+    def get_queryset(self):
+        if self.request.user.groups.filter(name='moderator').exists():
+            # Если пользователь является модератором, возвращаем все продукты
+            return Product.objects.all()
+        elif self.request.user.is_authenticated:
+            # Иначе, если пользователь аутентифицирован, показываем только его продукты
+            return Product.objects.filter(owner=self.request.user)
+        return Product.objects.none()
 
-class ProductDetailView(DetailView):
+
+
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
 
 
@@ -38,8 +50,25 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products_list")
 
+    def get_form_class(self):
+        if self.request.user.is_superuser:
+            return ProductForm
+        if self.request.user.has_perm('can_unpublish_product'):
+            return ProductModeratorForm
+        if self.request.user.has_perm('can_delete_product'):
+            return ProductModeratorForm
+        return ProductForm
+
 
 class ProductDeleteView(DeleteView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products_list")
+
+    def delete_product(request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+        if request.user == product.owner:
+            product.delete()
+            return redirect('product_list')
+        else:
+            return HttpResponseForbidden("У вас нет прав для удаления этого продукта.")
