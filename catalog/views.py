@@ -14,6 +14,11 @@ from catalog.services import get_products_by_category_from_cache, CategoryServic
 class HomeView(TemplateView):
     template_name = 'catalog/home.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
+
 
 class ContactsView(TemplateView):
     template_name = 'catalog/contacts.html'
@@ -33,8 +38,6 @@ class ProductListView(ListView):
 
     def get_queryset(self):
         return get_products_by_category_from_cache(self.request.user)
-
-
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
@@ -91,6 +94,17 @@ class CategoryProductView(ListView):
 class CategoryProductDetailView(DetailView):
     model = Category
     template_name = 'catalog/base.html'
+
+    def get_context_data(self, **kwargs):
+        # Получаем стандартный контекст данных из родительского класса
+        context = super().get_context_data(**kwargs)
+        # Получаем ID категория из объекта
+        category_id = self.kwargs.get('pk')
+        context['category_id'] = category_id
+        context['name'] = CategoryService.get_category_name(category_id)
+        context['products'] = Product.objects.filter(category_id=category_id)
+        print(context['products'])
+        return context
 
 
 

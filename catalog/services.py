@@ -25,6 +25,6 @@ def get_products_by_category_from_cache(user):
 
 class CategoryService:
     @staticmethod
-    def get_product_name(category_id):
+    def get_category_name(category_id):
         category = Category.objects.get(id=category_id)
         return category.name
