@@ -30,13 +30,7 @@
 								<li><a href="{% url 'users:register' %}" class="text-white">Регистрация</a></li>
 								{% endif %}
 							</ul>
-							<h4>Продукты в категории</h4>
-							{% for product in products %}
-   							<div>
-       							<p>{{ product.name }}</p>
-       							<p>{{ product.description }}</p>
-   							</div>
-							{% endfor %}
+
 						</div>
 					</div>
 				</div>

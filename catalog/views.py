@@ -93,7 +93,7 @@ class CategoryProductView(ListView):
 
 class CategoryProductDetailView(DetailView):
     model = Category
-    template_name = 'catalog/base.html'
+    template_name = 'catalog/products_in_category.html'
 
     def get_context_data(self, **kwargs):
         # Получаем стандартный контекст данных из родительского класса
