@@ -5,12 +5,19 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 
 from catalog.forms import ProductForm, ProductModeratorForm
-from catalog.models import Product
+from catalog.models import Product, Category
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+
+from catalog.services import get_products_by_category_from_cache, CategoryService
 
 
 class HomeView(TemplateView):
     template_name = 'catalog/home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
 
 
 class ContactsView(TemplateView):
@@ -20,15 +27,17 @@ class ContactsView(TemplateView):
 class ProductListView(ListView):
     model = Product
 
-    def get_queryset(self):
-        if self.request.user.groups.filter(name='moderator').exists():
-            # Если пользователь является модератором, возвращаем все продукты
-            return Product.objects.all()
-        elif self.request.user.is_authenticated:
-            # Иначе, если пользователь аутентифицирован, показываем только его продукты
-            return Product.objects.filter(owner=self.request.user)
-        return Product.objects.none()
+    # def get_queryset(self):
+    #     if self.request.user.groups.filter(name='moderator').exists():
+    #         # Если пользователь является модератором, возвращаем все продукты
+    #         return Product.objects.all()
+    #     elif self.request.user.is_authenticated:
+    #         # Иначе, если пользователь аутентифицирован, показываем только его продукты
+    #         return Product.objects.filter(owner=self.request.user)
+    #     return Product.objects.none()
 
+    def get_queryset(self):
+        return get_products_by_category_from_cache(self.request.user)
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
@@ -72,3 +81,32 @@ class ProductDeleteView(DeleteView):
             return redirect('product_list')
         else:
             return HttpResponseForbidden("У вас нет прав для удаления этого продукта.")
+
+
+class CategoryProductView(ListView):
+    model = Category
+    template_name = 'catalog/products_category.html'
+
+    def get_queryset(self):
+        return Category.objects.all()
+
+
+class CategoryProductDetailView(DetailView):
+    model = Category
+    template_name = 'catalog/products_in_category.html'
+
+    def get_context_data(self, **kwargs):
+        # Получаем стандартный контекст данных из родительского класса
+        context = super().get_context_data(**kwargs)
+        # Получаем ID категория из объекта
+        category_id = self.kwargs.get('pk')
+        context['category_id'] = category_id
+        context['name'] = CategoryService.get_category_name(category_id)
+        context['products'] = Product.objects.filter(category_id=category_id)
+        print(context['products'])
+        return context
+
+
+
+
+
