@@ -27,16 +27,16 @@ class ContactsView(TemplateView):
 class ProductListView(ListView):
     model = Product
 
-    # def get_queryset(self):
-    #     if self.request.user.groups.filter(name='moderator').exists():
-    #         # Если пользователь является модератором, возвращаем все продукты
-    #         return Product.objects.all()
-    #     elif self.request.user.is_authenticated:
-    #         # Иначе, если пользователь аутентифицирован, показываем только его продукты
-    #         return Product.objects.filter(owner=self.request.user)
-    #     return Product.objects.none()
-
     def get_queryset(self):
+        if self.request.user.groups.filter(name='moderator').exists():
+            # Если пользователь является модератором, возвращаем все продукты
+            return Product.objects.all()
+        elif self.request.user.is_authenticated:
+            # Иначе, если пользователь аутентифицирован, показываем только его продукты
+            return Product.objects.filter(owner=self.request.user)
+        return Product.objects.none()
+
+    def get_queryset_2(self):
         return get_products_by_category_from_cache(self.request.user)
 
 
