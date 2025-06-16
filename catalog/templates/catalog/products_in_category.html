@@ -1,0 +1,23 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Продукты в категории{% endblock %}
+
+{% block content %}
+<div class="album py-5 bg-body-tertiary">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      {% for product in products %}
+        <div class="col">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <p class="card-text">{{ product.name }}</p>
+              <p class="card-text">{{ product.description| truncatechars:100 }}</p>
+              <p class="card-text">Цена: {{ product.price }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
