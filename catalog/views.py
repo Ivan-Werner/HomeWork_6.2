@@ -102,8 +102,9 @@ class CategoryProductDetailView(DetailView):
         category_id = self.kwargs.get('pk')
         context['category_id'] = category_id
         context['name'] = CategoryService.get_category_name(category_id)
-        context['products'] = Product.objects.filter(category_id=category_id)
-        print(context['products'])
+        # context['products'] = Product.objects.filter(category_id=category_id)
+        context['products'] = get_products_by_category_from_cache(category_id=category_id)
+        # print(context['products'])
         return context
 
 
